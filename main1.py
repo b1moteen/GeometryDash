@@ -1,6 +1,7 @@
-import pygame
-import sys
 import os
+import sys
+
+import pygame
 
 
 def terminate():
@@ -53,6 +54,8 @@ class Tile(pygame.sprite.Sprite):
             super().__init__(all_sprites, tiles_group, floor_group)
         elif tile_type == "background":
             super().__init__(all_sprites, tiles_group, environment_group)
+        elif tile_type == "spike":
+            super().__init__(all_sprites, tiles_group, spikes_group)
         else:
             super().__init__(all_sprites, tiles_group, obstacles_group)
         self.image = Tile.tile_images[tile_type]
@@ -73,14 +76,15 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.level = level
-        self.xVelocity = 10
+        self.xVelocity = 7
         self.yVelocity = 0
 
     def update(self):
+        mouse_buttons = pygame.mouse.get_pressed()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_SPACE] or keys[pygame.K_UP] or mouse_buttons[0]:
             if Player.is_ground(self):
-                self.yVelocity -= 4
+                self.yVelocity -= 13
 
     def move(self):
         self.rect.x += self.xVelocity
@@ -89,11 +93,23 @@ class Player(pygame.sprite.Sprite):
             self.yVelocity += gravity
         if Player.is_blocking(self):
             self.yVelocity = 0
+        Player.death_or_not(self)
+
+    def death_or_not(self):
+        for spike in pygame.sprite.spritecollide(self, spikes_group, False):
+            if pygame.sprite.collide_mask(self, spike):
+                terminate()
+
+        for block in pygame.sprite.spritecollide(self, obstacles_group, False):
+            if Player.is_blocking(self):
+                if block.rect.x <= self.rect.x + self.rect.width <= block.rect.x + block.rect.width:
+                    terminate()
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 800 or self.rect.y < 0 or self.rect.y > 800:
             return True
-        elif not pygame.sprite.spritecollide(self, environment_group, False):
+        elif pygame.sprite.spritecollide(self, floor_group, False) or pygame.sprite.spritecollide(self, obstacles_group,
+                                                                                                  False):
             return True
         else:
             return False
@@ -103,6 +119,13 @@ class Player(pygame.sprite.Sprite):
             return True
         else:
             return False
+
+    def is_on_obstacle(self):
+        block_collide = pygame.sprite.spritecollide(self, obstacles_group, False)
+        if len(block_collide) != 0:
+            for block in block_collide:
+                if self.rect.y + self.rect.height >= block.rect.y or self.rect.y + self.rect.height <= block.rect.y:
+                    return True
 
 
 class Camera:
@@ -160,13 +183,14 @@ tile_height = 50
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Перемещение героя")
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 120
 gravity = 1
 tm = 20  # Terminal Velocity
 
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 obstacles_group = pygame.sprite.Group()
+spikes_group = pygame.sprite.Group()
 environment_group = pygame.sprite.Group()
 floor_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
