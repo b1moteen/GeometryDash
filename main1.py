@@ -86,7 +86,7 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] or keys[pygame.K_UP] or mouse_buttons[0]:
             if Player.is_ground(self) or Player.is_on_obstacle(self):
-                self.yVelocity -= 10
+                self.yVelocity -= 5
 
     def move(self):
         self.rect.x += self.xVelocity
@@ -105,12 +105,12 @@ class Player(pygame.sprite.Sprite):
 
         for block in pygame.sprite.spritecollide(self, obstacles_group, False):
             if Player.is_blocking(self):
-                if block.rect.x - 2 <= self.rect.x + self.rect.width <= block.rect.x + 2:
-                    if not Player.is_on_obstacle(self):
-                        terminate()
+                if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Player.is_on_obstacle(
+                        self):
+                    terminate()
 
     def is_blocking(self):
-        if self.rect.x < 0 or self.rect.x > 800 or self.rect.y < 0 or self.rect.y > 800:
+        if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
             return True
         elif pygame.sprite.spritecollide(self, floor_group, False) or pygame.sprite.spritecollide(self, obstacles_group,
                                                                                                   False):
@@ -130,14 +130,16 @@ class Player(pygame.sprite.Sprite):
         if len(block_collide) != 0:
             for block in block_collide:
                 if block.rect.y - 10 < self.rect.y + self.rect.height < block.rect.y + 10:
-                    self.yVelocity = 0
+                    if self.rect.y % 70 < 5:
+                        y_pos = self.rect.y // 70
+                        self.rect.y = y_pos  * 70
                     return True
 
     def under_ground(self):
         if pygame.sprite.spritecollide(self, floor_group, False):
             for floor in pygame.sprite.spritecollide(self, floor_group, False):
                 if floor.rect.y > self.rect.y + self.rect.height:
-                    self.rect.y = floor.rect.y - self.rect.height - 1
+                    self.rect.y = self.y * tile_height + tile_height - self.rect.height
 
 
 class Camera:
@@ -153,7 +155,7 @@ class Camera:
         x, y = sprite.rect.x, sprite.rect.y
         w, h = sprite.rect.width, sprite.rect.height
         self.dx = -(x - width // 2 + w // 2 + 200)
-        self.dy = -(y - height // 2 + h // 2 - 200)
+        self.dy = -(y - height // 2 + h // 2 - 500)
 
 
 def load_level(filename):
@@ -193,10 +195,10 @@ size = width, height = 800, 800
 tile_width = 50
 tile_height = 50
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-pygame.display.set_caption("Перемещение героя")
+pygame.display.set_caption("Geometry Dash")
 clock = pygame.time.Clock()
 FPS = 60
-gravity = 0.7
+gravity = 0.3
 tm = 50  # Terminal Velocity
 
 all_sprites = pygame.sprite.Group()
