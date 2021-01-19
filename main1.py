@@ -50,6 +50,8 @@ class Tile(pygame.sprite.Sprite):
                    "spike": pygame.image.load("data/ground/spike.png")}
 
     def __init__(self, tile_type, x, y):
+        self.image = Tile.tile_images[tile_type]
+        self.image = pygame.transform.scale(self.image, (70, 70))
         if tile_type == "floor":
             super().__init__(all_sprites, tiles_group, floor_group)
         elif tile_type == "background":
@@ -58,7 +60,6 @@ class Tile(pygame.sprite.Sprite):
             super().__init__(all_sprites, tiles_group, spikes_group)
         else:
             super().__init__(all_sprites, tiles_group, obstacles_group)
-        self.image = Tile.tile_images[tile_type]
         self.rect = self.image.get_rect()
         self.rect.x = x * tile_width
         self.rect.y = y * tile_height
@@ -77,7 +78,7 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.level = level
-        self.xVelocity = 25
+        self.xVelocity = 5
         self.yVelocity = 0
 
     def update(self):
@@ -194,7 +195,7 @@ tile_height = 50
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Перемещение героя")
 clock = pygame.time.Clock()
-FPS = 120
+FPS = 60
 gravity = 0.7
 tm = 50  # Terminal Velocity
 
