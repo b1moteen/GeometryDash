@@ -2,7 +2,6 @@ import os
 
 from Camera import *
 from Level import *
-from exeception import *
 from sprites import *
 
 
