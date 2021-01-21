@@ -21,7 +21,7 @@ def create_level(filename):
             elif level[y][x] == "@":
                 level[y][x] = "."
                 Tile("background", x, y)
-                player = Player(level, x, y)
+                player = Square(level, x, y)
             elif level[y][x] == "-":
                 Tile("floor", x, y)
             elif level[y][x] == "+":
@@ -29,5 +29,10 @@ def create_level(filename):
                 Tile("background", x, y)
                 level[y][x] = "+"
                 Tile("spike", x, y)
+            elif level[y][x] == "(":
+                level[y][x] = "."
+                Tile("background", x, y)
+                level[y][x] = "("
+                Tile("portal", x, y)
 
     return player

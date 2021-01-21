@@ -1,185 +1,123 @@
-import pygame
+from Groups import *
+from constants import *
+from exeception import *
 
-WHITE = (255,255,255)
-BLACK = (0  ,0  ,0  )
-RED   = (255,0  ,0  )
-GREEN = (0  ,255,0  )
-BLUE  = (0  ,0  ,255)
 
-class Player():
-
-    def __init__(self, x=0, y=0, width=150, height=150):
-
-        self.rect = pygame.Rect(x, y, width, height)
-
-        self.speed_x = 5
-        self.speed_y = 5
-
-        self.move_x = 0
-        self.move_y = 0
-
-        self.collision = [False] * 9
-
-        self.font = pygame.font.SysFont("", 32)
-        self.text = "";
-
-    def set_center(self, screen):
-        self.rect.center = screen.get_rect().center
-
-    def event_handler(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.move_x -= self.speed_x
-            elif event.key == pygame.K_RIGHT:
-                self.move_x += self.speed_x
-            elif event.key == pygame.K_UP:
-                self.move_y -= self.speed_y
-            elif event.key == pygame.K_DOWN:
-                self.move_y += self.speed_y
-
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                self.move_x += self.speed_x
-            elif event.key == pygame.K_RIGHT:
-                self.move_x -= self.speed_x
-            elif event.key == pygame.K_UP:
-                self.move_y += self.speed_y
-            elif event.key == pygame.K_DOWN:
-                self.move_y -= self.speed_y
+class Player(pygame.sprite.Sprite):
+    def __init__(self, level, y, x):
+        player_group.empty()
+        super().__init__(all_sprites, player_group)
+        self.x = x
+        self.y = y
+        self.level = level
+        self.xVelocity = 2
+        self.yVelocity = 0
 
     def update(self):
-        self.rect.x += self.move_x
-        self.rect.y += self.move_y
+        mouse_buttons = pygame.mouse.get_pressed()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] or keys[pygame.K_UP] or mouse_buttons[0]:
+            if Square.is_ground(self) or Square.is_on_obstacle(self):
+                self.yVelocity -= 17
 
-    def draw(self, screen):
+    def move(self):
+        self.rect.x += self.xVelocity
+        self.rect.y += self.yVelocity
+        if self.yVelocity <= tm and not Square.is_blocking(self):
+            self.yVelocity += gravity
+        if Square.is_blocking(self):
+            self.yVelocity = 0
+        Player.death_or_not(self)
+        Player.under_ground(self)
 
-        pygame.draw.rect(screen, WHITE, self.rect, 2)
-        self.draw_point(screen, self.rect.topleft, self.collision[0])
-        self.draw_point(screen, self.rect.topright, self.collision[1])
-        self.draw_point(screen, self.rect.bottomleft, self.collision[2])
-        self.draw_point(screen, self.rect.bottomright, self.collision[3])
-
-        self.draw_point(screen, self.rect.midleft, self.collision[4])
-        self.draw_point(screen, self.rect.midright, self.collision[5])
-        self.draw_point(screen, self.rect.midtop, self.collision[6])
-        self.draw_point(screen, self.rect.midbottom, self.collision[7])
-
-        self.draw_point(screen, self.rect.center, self.collision[8])
-
-    def draw_point(self, screen, pos, collision):
-        if not collision:
-            pygame.draw.circle(screen, GREEN, pos, 5)
+    def is_ground(self):
+        if pygame.sprite.spritecollide(self, floor_group, False):
+            self.yVelocity = 0
+            return True
         else:
-            pygame.draw.circle(screen, RED, pos, 5)
+            return False
 
-    def check_collision(self, rect):
-        self.collision[0] = rect.collidepoint(self.rect.topleft)
-        self.collision[1] = rect.collidepoint(self.rect.topright)
-        self.collision[2] = rect.collidepoint(self.rect.bottomleft)
-        self.collision[3] = rect.collidepoint(self.rect.bottomright)
+    def is_blocking(self):
+        if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
+            return True
+        elif pygame.sprite.spritecollide(self, floor_group, False) or pygame.sprite.spritecollide(self, obstacles_group,
+                                                                                                  False):
+            return True
+        else:
+            return False
 
-        self.collision[4] = rect.collidepoint(self.rect.midleft)
-        self.collision[5] = rect.collidepoint(self.rect.midright)
-        self.collision[6] = rect.collidepoint(self.rect.midtop)
-        self.collision[7] = rect.collidepoint(self.rect.midbottom)
+    def death_or_not(self):
+        for spike in pygame.sprite.spritecollide(self, spikes_group, False):
+            if pygame.sprite.collide_mask(self, spike):
+                terminate()
 
-        self.collision[8] = rect.collidepoint(self.rect.center)
+        for block in pygame.sprite.spritecollide(self, obstacles_group, False):
+            if Square.is_blocking(self):
+                if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Square.is_on_obstacle(
+                        self):
+                    terminate()
 
-    def render_collision_info(self):
+    def is_on_obstacle(self):
+        block_collide = pygame.sprite.spritecollide(self, obstacles_group, False)
+        if len(block_collide) != 0:
+            for block in block_collide:
+                if block.rect.y - 17 <= self.rect.y + self.rect.height <= block.rect.y + 17:
+                    if self.rect.y % 70 <= 17:
+                        y_pos = self.rect.y // 70
+                        self.rect.y = y_pos * 70
+                    return True
 
-        text = "collision: "
-        print "collision:",
-
-        if self.collision[0] or self.collision[2] or self.collision[4]:
-            text += "left "
-            print "left",
-
-        if self.collision[1] or self.collision[3] or self.collision[5]:
-            text += "right "
-            print "right",
-
-        if self.collision[0] or self.collision[1] or self.collision[6]:
-            text += "top "
-            print "top",
-
-        if self.collision[2] or self.collision[3] or self.collision[7]:
-            text += "bottom "
-            print "bottom",
-
-        if self.collision[8]:
-            text += "center "
-            print "center",
-
-        print
-
-        self.text = self.font.render(text, 1, WHITE)
-
-    def draw_collision_info(self, screen, pos):
-        screen.blit(self.text, pos)
-
-#----------------------------------------------------------------------
-
-class Game():
-
-    def __init__(self):
-
-        pygame.init()
-
-        self.screen = pygame.display.set_mode( (800,600) )
-        pygame.display.set_caption("Side Collision")
-
-        self.player = Player()
-        self.enemy  = Player()
-        self.enemy.set_center(self.screen)
+    def under_ground(self):
+        if pygame.sprite.spritecollide(self, floor_group, False):
+            for floor in pygame.sprite.spritecollide(self, floor_group, False):
+                if floor.rect.y - 10 < self.rect.y + self.rect.height < floor.rect.y + 10:
+                    if self.rect.y % 70 < 20:
+                        y_pos = self.rect.y // 70
+                        self.rect.y = y_pos * 70
+                    return True
 
 
-    def run(self):
-        clock = pygame.time.Clock()
+class Square(Player):
+    player_image = pygame.image.load("data/sprites/square.png")
 
-        RUNNING = True
+    def __init__(self, level, y, x):
+        super().__init__(x, y, level)
+        self.image = Square.player_image
+        self.rect = self.image.get_rect()
+        self.xVelocity = square_x_velocity
+        self.yVelocity = 0
 
-        while RUNNING:
+    def move(self):
+        Square.plain_portal(self)
 
-            # --- events ----
+    def plain_portal(self):
+        if pygame.sprite.spritecollide(self, portal_group, False):
+            Plain(self.level, self.x, self.y)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    RUNNING = False
 
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        RUNNING = False
+class Plain(Player):
+    player_image = pygame.image.load("data/sprites/plane.png")
 
-                self.player.event_handler(event)
+    def __init__(self, level, x, y):
+        super().__init__(x, y, level)
+        self.image = Square.player_image
+        self.rect = self.image.get_rect()
+        self.xVelocity = square_x_velocity
+        self.yVelocity = 0
+        self.gravity = 1.85
 
-            # --- updates ---
+    def update(self):
+        mouse_buttons = pygame.mouse.get_pressed()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] or keys[pygame.K_UP] or mouse_buttons[0]:
+            self.yVelocity -= 3
 
-            self.player.update()
-            self.enemy.update()
-
-            self.player.check_collision(self.enemy.rect)
-            self.enemy.check_collision(self.player.rect)
-            self.player.render_collision_info()
-            self.enemy.render_collision_info()
-
-            # --- draws ----
-
-            self.screen.fill(BLACK)
-
-            self.player.draw(self.screen)
-            self.enemy.draw(self.screen)
-
-            self.player.draw_collision_info(self.screen, (0,0))
-            self.enemy.draw_collision_info(self.screen, (0,32))
-
-            pygame.display.update()
-
-            # --- FPS ---
-
-            clock.tick(30)
-
-        pygame.quit()
-
-#----------------------------------------------------------------------
-
-Game().run()
+    def move(self):
+        self.rect.x += self.xVelocity
+        self.rect.y += self.yVelocity
+        if self.yVelocity <= tm and Square.is_blocking(self):
+            self.yVelocity += self.gravity
+        if Plain.is_on_obstacle(self) or Plain.is_ground(self):
+            self.yVelocity = 0
+        Plain.death_or_not(self)
+        Plain.under_ground(self)
