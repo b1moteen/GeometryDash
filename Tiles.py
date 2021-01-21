@@ -11,7 +11,6 @@ class Tile(pygame.sprite.Sprite):
 
     def __init__(self, tile_type, x, y):
         self.image = Tile.tile_images[tile_type]
-        self.image = pygame.transform.scale(self.image, (70, 70))
         if tile_type == "floor":
             super().__init__(all_sprites, tiles_group, floor_group)
         elif tile_type == "background":
