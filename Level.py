@@ -16,7 +16,7 @@ def create_level(filename):
         for x in range(len(level[y])):
             if level[y][x] == ".":
                 Tile("background", x, y)
-            if level[y][x] == "#":
+            elif level[y][x] == "#":
                 Tile("box", x, y)
             elif level[y][x] == "@":
                 level[y][x] = "."
@@ -34,5 +34,7 @@ def create_level(filename):
                 Tile("background", x, y)
                 level[y][x] = "("
                 Tile("portal", x, y)
+            elif level[y][x] == ")":
+                Tile('finish', x, y)
 
     return player

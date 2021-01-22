@@ -7,7 +7,8 @@ class Tile(pygame.sprite.Sprite):
                    "box": pygame.image.load("data/ground/box.png"),
                    "floor": pygame.image.load("data/ground/floor.png"),
                    "spike": pygame.image.load("data/ground/spike.png"),
-                   "portal": pygame.image.load("data/ground/portal.png")}
+                   "portal": pygame.image.load("data/ground/portal.png"),
+                   "finish": pygame.image.load("data/ground/background.png")}
 
     def __init__(self, tile_type, x, y):
         self.image = Tile.tile_images[tile_type]
@@ -19,6 +20,8 @@ class Tile(pygame.sprite.Sprite):
             super().__init__(all_sprites, tiles_group, spikes_group)
         elif tile_type == "portal":
             super().__init__(all_sprites, tiles_group, environment_group, portal_group)
+        elif tile_type == "finish":
+            super().__init__(all_sprites, tiles_group, finish_group)
         else:
             super().__init__(all_sprites, tiles_group, obstacles_group)
         self.rect = self.image.get_rect()

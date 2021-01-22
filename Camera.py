@@ -1,5 +1,6 @@
 from constants import *
 
+
 class Camera:
     def __init__(self):
         self.dx = 0
