@@ -1,7 +1,7 @@
 from Camera import *
 from views import *
-from prepare import *
-from exeception import *
+
+
 
 show_intro(screen)
 player = main_menu(screen)
