@@ -1,4 +1,4 @@
-from constants import *
+from Level import *
 from exeception import *
 
 
@@ -32,13 +32,75 @@ def show_intro(screen):
 
 
 def main_menu(screen):
-    screen.fill(155, 155, 155)
-    y = 0
-    level_rects = dict()
-    for level in level_names.keys():
-        font = pygame.font.Font(None, 50)
-        level_name = font.render(level, True, (0, 0, 0))
-        screen.blit(level_name, (50, y))
-        level_name_rect = level_name.get_rect()
-        level_rects[level] = level_name_rect
-        y += 50
+    screen.fill("green")
+    font = pygame.font.Font(None, 50)
+    first_level_text = font.render("Первый уровень", True, (0, 0, 0))
+    screen.blit(first_level_text, (50, 50))
+    first_level_text_rect = first_level_text.get_rect()
+    first_level_text_rect.x = 50
+    first_level_text_rect.y = 50
+
+    second_level_text = font.render("Второй уровень", True, (0, 0, 0))
+    screen.blit(second_level_text, (50, 100))
+    second_level_text_rect = second_level_text.get_rect()
+    second_level_text_rect.x = 50
+    second_level_text_rect.y = 100
+
+    exit_text = font.render("Выход", True, (0, 0, 0))
+    screen.blit(exit_text, (50, 200))
+    exit_text_rect = exit_text.get_rect()
+    exit_text_rect.x = 50
+    exit_text_rect.y = 200
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if exit_text_rect.collidepoint(event.pos):
+                    terminate()
+                elif first_level_text_rect.collidepoint(event.pos):
+                    return create_level(level_names["first"])
+                elif second_level_text_rect.collidepoint(event.pos):
+                    return create_level(level_names["second"])
+
+
+def after_death(screen, level):
+    screen.fill("black")
+    font = pygame.font.Font(None, 50)
+
+    rerun_level_text = font.render("Заново", True, (255, 255, 255))
+    screen.blit(rerun_level_text, (50, 50))
+    rerun_level_text_rect = rerun_level_text.get_rect()
+    rerun_level_text_rect.x = 50
+    rerun_level_text_rect.y = 50
+
+    main_menu_level_text = font.render("Главное меню", True, (255, 255, 255))
+    screen.blit(main_menu_level_text, (50, 100))
+    main_menu_text_rect = main_menu_level_text.get_rect()
+    main_menu_text_rect.x = 50
+    main_menu_text_rect.y = 100
+
+    exit_text = font.render("Выход", True, (255, 255, 255))
+    screen.blit(exit_text, (50, 200))
+    exit_text_rect = exit_text.get_rect()
+    exit_text_rect.x = 50
+    exit_text_rect.y = 150
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if exit_text_rect.collidepoint(event.pos):
+                    terminate()
+                elif rerun_level_text_rect.collidepoint(event.pos):
+                    return create_level(level)
+                elif main_menu_text_rect.collidepoint(event.pos):
+                    return main_menu(screen)
+                elif exit_text_rect.collidepoint(event.pos):
+                    terminate()

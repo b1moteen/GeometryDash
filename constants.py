@@ -15,5 +15,5 @@ square_x_velocity = 2
 
 #------
 
-level_names = {'first': "first_map.txt",
-               "second": "second_map.txt"}
+level_names = {'first': "first_level.txt",
+               "second": "second_level.txt"}

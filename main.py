@@ -1,19 +1,10 @@
-import os
-
 from Camera import *
-from Level import *
-from sprites import *
 from views import *
-
-
-input_level = "first_map.txt"
-pygame.init()
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-pygame.display.set_caption("Geometry Dash")
-clock = pygame.time.Clock()
+from prepare import *
+from exeception import *
 
 show_intro(screen)
-player = create_level(input_level)
+player = main_menu(screen)
 camera = Camera()
 while True:
     for event in pygame.event.get():

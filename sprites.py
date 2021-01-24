@@ -1,3 +1,5 @@
+import views
+from prepare import *
 from Groups import *
 from constants import *
 from exeception import *
@@ -6,7 +8,7 @@ from exeception import *
 class Square(pygame.sprite.Sprite):
     player_image = pygame.image.load("data/sprites/square.png")
 
-    def __init__(self, level, x, y):
+    def __init__(self, level, level_name, x, y):
         player_group.empty()
         super().__init__(all_sprites, player_group)
         self.image = Square.player_image
@@ -16,6 +18,7 @@ class Square(pygame.sprite.Sprite):
         self.rect.y = (y - 1) * tile_height
         self.x = x
         self.y = y
+        self.level_name = level_name
         self.level = level
         self.xVelocity = 8
         self.yVelocity = 0
@@ -41,13 +44,13 @@ class Square(pygame.sprite.Sprite):
     def death_or_not(self):
         for spike in pygame.sprite.spritecollide(self, spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                terminate()
+                views.after_death(screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, obstacles_group, False):
             if Square.is_blocking(self):
                 if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Square.is_on_obstacle(
                         self):
-                    terminate()
+                    views.after_death(screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
@@ -97,7 +100,7 @@ class Square(pygame.sprite.Sprite):
 class Plain(pygame.sprite.Sprite):
     player_image = pygame.image.load("data/sprites/plane.png")
 
-    def __init__(self, level, x, y):
+    def __init__(self, level, level_name, x, y):
         player_group.empty()
         super().__init__(all_sprites, player_group)
         self.image = Plain.player_image
@@ -106,6 +109,7 @@ class Plain(pygame.sprite.Sprite):
         self.rect.y = (y - 1)* tile_height
         self.x = x
         self.y = y
+        self.level_name = level_name
         self.level = level
         self.xVelocity = 10
         self.yVelocity = 0
@@ -131,13 +135,13 @@ class Plain(pygame.sprite.Sprite):
     def death_or_not(self):
         for spike in pygame.sprite.spritecollide(self, spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                terminate()
+                views.after_death(screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, obstacles_group, False):
             if Plain.is_blocking(self):
                 if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Plain.is_on_obstacle(
                         self):
-                    terminate()
+                    views.after_death(screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:

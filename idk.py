@@ -2,25 +2,14 @@ from Groups import *
 from constants import *
 from exeception import *
 
+
 class Main_Hero(pygame.sprite.Sprite):
-
-
-class Square(pygame.sprite.Sprite):
-    player_image = pygame.image.load("data/sprites/square.png")
-
     def __init__(self, level, x, y):
         player_group.empty()
         super().__init__(all_sprites, player_group)
-        self.image = Square.player_image
-        self.image = pygame.transform.scale(self.image, (70, 70))
-        self.rect = self.image.get_rect()
-        self.rect.x = x * tile_width
-        self.rect.y = (y - 1) * tile_height
         self.x = x
         self.y = y
         self.level = level
-        self.xVelocity = 8
-        self.yVelocity = 0
 
     def update(self):
         mouse_buttons = pygame.mouse.get_pressed()
@@ -86,17 +75,30 @@ class Square(pygame.sprite.Sprite):
                         self.rect.y = y_pos * 70
                     return True
 
-    def plain_portal(self):
-        if pygame.sprite.spritecollide(self, portal_group, False):
-            Plain(self.level, self.x, self.y)
-
     def finish(self):
         if pygame.sprite.spritecollide(self, finish_group, False):
             print("Ты выиграл")
             terminate()
 
+class Square(Main_Hero):
+    player_image = pygame.image.load("data/sprites/square.png")
 
-class Plain(pygame.sprite.Sprite):
+    def __init__(self, level, x, y):
+        super().__init__(Main_Hero, level, x, y)
+        self.image = Square.player_image
+        self.image = pygame.transform.scale(self.image, (70, 70))
+        self.rect = self.image.get_rect()
+        self.rect.x = x * tile_width
+        self.rect.y = (y - 1) * tile_height
+        self.xVelocity = 8
+        self.yVelocity = 0
+
+    def plain_portal(self):
+        if pygame.sprite.spritecollide(self, portal_group, False):
+            Plain(self.level, self.x, self.y)
+
+
+class Plain(Main_Hero):
     player_image = pygame.image.load("data/sprites/plane.png")
 
     def __init__(self, level, x, y):
