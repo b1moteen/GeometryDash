@@ -87,7 +87,7 @@ def after_death(screen, level):
     screen.blit(exit_text, (50, 200))
     exit_text_rect = exit_text.get_rect()
     exit_text_rect.x = 50
-    exit_text_rect.y = 150
+    exit_text_rect.y = 200
 
     pygame.display.flip()
 
@@ -99,8 +99,6 @@ def after_death(screen, level):
                 if exit_text_rect.collidepoint(event.pos):
                     terminate()
                 elif rerun_level_text_rect.collidepoint(event.pos):
-                    return create_level(level)
+                    return "rerun"
                 elif main_menu_text_rect.collidepoint(event.pos):
-                    return main_menu(screen)
-                elif exit_text_rect.collidepoint(event.pos):
-                    terminate()
+                    return "main_menu"

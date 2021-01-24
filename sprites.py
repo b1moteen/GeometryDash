@@ -1,3 +1,4 @@
+import Level
 import views
 from prepare import *
 from Groups import *
@@ -16,10 +17,10 @@ class Square(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * tile_width
         self.rect.y = (y - 1) * tile_height
+        self.level = level
+        self.level_name = level_name
         self.x = x
         self.y = y
-        self.level_name = level_name
-        self.level = level
         self.xVelocity = 8
         self.yVelocity = 0
 
@@ -44,13 +45,19 @@ class Square(pygame.sprite.Sprite):
     def death_or_not(self):
         for spike in pygame.sprite.spritecollide(self, spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                views.after_death(screen, self.level_name)
+                if views.after_death(screen, self.level_name) == "rerun":
+                    player = Level.create_level(self.level_name)
+                elif views.after_death(screen, self.level_name) == "main_menu":
+                    views.main_menu(screen)
 
         for block in pygame.sprite.spritecollide(self, obstacles_group, False):
             if Square.is_blocking(self):
                 if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Square.is_on_obstacle(
                         self):
-                    views.after_death(screen, self.level_name)
+                    if views.after_death(screen, self.level_name) == "rerun":
+                        player = Level.create_level(self.level_name)
+                    elif views.after_death(screen, self.level_name) == "main_menu":
+                        views.main_menu(screen)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
@@ -89,7 +96,7 @@ class Square(pygame.sprite.Sprite):
 
     def plain_portal(self):
         if pygame.sprite.spritecollide(self, portal_group, False):
-            Plain(self.level, self.x, self.y)
+            Plain(self.level, self.level_name, self.x, self.y)
 
     def finish(self):
         if pygame.sprite.spritecollide(self, finish_group, False):
@@ -107,10 +114,10 @@ class Plain(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * tile_width
         self.rect.y = (y - 1)* tile_height
+        self.level = level
+        self.level_name = level_name
         self.x = x
         self.y = y
-        self.level_name = level_name
-        self.level = level
         self.xVelocity = 10
         self.yVelocity = 0
         self.gravity = 1.5
@@ -122,7 +129,7 @@ class Plain(pygame.sprite.Sprite):
             self.yVelocity -= 2.5
         self.rect.x += self.xVelocity
         self.rect.y += self.yVelocity
-        if self.yVelocity <= tm_plain and not Square.is_blocking(self):
+        if self.yVelocity <= tm_plain and not Plain.is_blocking(self):
             self.yVelocity += self.gravity
         if Plain.is_on_obstacle(self) or Plain.is_ground(self):
             self.yVelocity = 0
@@ -135,13 +142,19 @@ class Plain(pygame.sprite.Sprite):
     def death_or_not(self):
         for spike in pygame.sprite.spritecollide(self, spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                views.after_death(screen, self.level_name)
+                if views.after_death(screen, self.level_name) == "rerun":
+                    player = Level.create_level(self.level_name)
+                elif views.after_death(screen, self.level_name) == "main_menu":
+                    views.main_menu(screen)
 
         for block in pygame.sprite.spritecollide(self, obstacles_group, False):
             if Plain.is_blocking(self):
                 if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Plain.is_on_obstacle(
                         self):
-                    views.after_death(screen, self.level_name)
+                    if views.after_death(screen, self.level_name) == "rerun":
+                        player = Level.create_level(self.level_name)
+                    elif views.after_death(screen, self.level_name) == "main_menu":
+                        views.main_menu(screen)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:
@@ -182,7 +195,7 @@ class Plain(pygame.sprite.Sprite):
 
     def square_portal(self):
         if pygame.sprite.spritecollide(self, portal_group, False):
-            Square(self.level, self.x, self.y)
+            Square(self.level, self.level_name, self.x, self.y)
 
     def finish(self):
         if pygame.sprite.spritecollide(self, finish_group, False):
