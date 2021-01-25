@@ -1,9 +1,9 @@
 import Level
 import views
-from prepare import *
 from Groups import *
 from constants import *
 from exeception import *
+from prepare import *
 
 
 class Square(pygame.sprite.Sprite):
@@ -37,6 +37,7 @@ class Square(pygame.sprite.Sprite):
             self.yVelocity += gravity
         if Square.is_blocking(self):
             self.yVelocity = 0
+        self.y = self.rect.y // tile_height
         Square.death_or_not(self)
         Square.under_ground(self)
         Square.plain_portal(self)
@@ -177,7 +178,7 @@ class Plain(pygame.sprite.Sprite):
         block_collide = pygame.sprite.spritecollide(self, obstacles_group, False)
         if len(block_collide) != 0:
             for block in block_collide:
-                if block.rect.y - 10 < self.rect.y + self.rect.height < block.rect.y + 10:
+                if block.rect.y - 45 < self.rect.y + self.rect.height < block.rect.y + 45:
                     if self.rect.y % 70 < 25:
                         y_pos = self.rect.y // 70
                         self.rect.y = y_pos * 70
@@ -186,8 +187,8 @@ class Plain(pygame.sprite.Sprite):
     def under_ground(self):
         if pygame.sprite.spritecollide(self, floor_group, False):
             if self.rect.y % 70 < 25:
-                    y_pos = self.rect.y // 70
-                    self.rect.y = y_pos * 70
+                y_pos = self.rect.y // 70
+                self.rect.y = y_pos * 70
 
     def square_portal(self):
         if pygame.sprite.spritecollide(self, portal_group, False):
