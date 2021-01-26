@@ -21,33 +21,24 @@ while True:
     pygame.display.flip()
     prepare.clock.tick(FPS)
     if constants.after_death:
+        constants.after_death = False
+        all_sprites.empty()
+        tiles_group.empty()
+        obstacles_group.empty()
+        spikes_group.empty()
+        environment_group.empty()
+        floor_group.empty()
+        finish_group.empty()
+        player_group.empty()
+        portal_group.empty()
         if constants.rerun:
             constants.rerun = False
-            constants.after_death = False
-            all_sprites.empty()
-            tiles_group.empty()
-            obstacles_group.empty()
-            spikes_group.empty()
-            environment_group.empty()
-            floor_group.empty()
-            finish_group.empty()
-            player_group.empty()
-            portal_group.empty()
             player = create_level(constants.current_level)
             constants.current_level = None
         elif main_menu:
             constants.main_menu = False
-            constants.after_death = False
-            all_sprites.empty()
-            tiles_group.empty()
-            obstacles_group.empty()
-            spikes_group.empty()
-            environment_group.empty()
-            floor_group.empty()
-            finish_group.empty()
-            player_group.empty()
-            portal_group.empty()
             player = views.main_menu(prepare.screen)
+
 
 
 
