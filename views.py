@@ -108,4 +108,3 @@ def after_death(screen=prepare.screen, level=None):
                     constants.main_menu = True
                     return
 
-

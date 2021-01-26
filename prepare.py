@@ -1,5 +1,4 @@
 import pygame
-import constants
 
 pygame.init()
 screen = pygame.display.set_mode()
