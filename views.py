@@ -1,5 +1,6 @@
 from Level import *
 from exeception import *
+import constants
 
 
 def show_intro(screen):
@@ -67,7 +68,8 @@ def main_menu(screen):
                     return create_level(level_names["second"])
 
 
-def after_death(screen, level):
+def after_death(screen=prepare.screen, level=None):
+
     screen.fill("black")
     font = pygame.font.Font(None, 50)
 
@@ -99,6 +101,11 @@ def after_death(screen, level):
                 if exit_text_rect.collidepoint(event.pos):
                     terminate()
                 elif rerun_level_text_rect.collidepoint(event.pos):
-                    return "rerun"
+                    constants.rerun = True
+                    constants.current_level = level
+                    return
                 elif main_menu_text_rect.collidepoint(event.pos):
-                    return "main_menu"
+                    constants.main_menu = True
+                    return
+
+

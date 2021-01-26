@@ -1,22 +1,21 @@
-import Level
+import constants
+import prepare
 import views
-from Groups import *
-from constants import *
+import Groups
 from exeception import *
-from prepare import *
 
 
 class Square(pygame.sprite.Sprite):
     player_image = pygame.image.load("data/sprites/square.png")
 
     def __init__(self, level, level_name, x, y):
-        player_group.empty()
-        super().__init__(all_sprites, player_group)
+        Groups.player_group.empty()
+        super().__init__(Groups.all_sprites, Groups.player_group)
         self.image = Square.player_image
         self.image = pygame.transform.scale(self.image, (70, 70))
         self.rect = self.image.get_rect()
-        self.rect.x = x * tile_width
-        self.rect.y = (y - 1) * tile_height
+        self.rect.x = x * constants.tile_width
+        self.rect.y = (y - 1) * constants.tile_height
         self.level = level
         self.level_name = level_name
         self.x = x
@@ -33,51 +32,47 @@ class Square(pygame.sprite.Sprite):
 
         self.rect.x += self.xVelocity
         self.rect.y += self.yVelocity
-        if self.yVelocity <= tm and not Square.is_blocking(self):
-            self.yVelocity += gravity
+        if self.yVelocity <= constants.tm and not Square.is_blocking(self):
+            self.yVelocity += constants.gravity
         if Square.is_blocking(self):
             self.yVelocity = 0
-        self.y = self.rect.y // tile_height
+        self.y = self.rect.y // constants.tile_height
         Square.death_or_not(self)
         Square.under_ground(self)
         Square.plain_portal(self)
         Square.finish(self)
 
     def death_or_not(self):
-        for spike in pygame.sprite.spritecollide(self, spikes_group, False):
+        for spike in pygame.sprite.spritecollide(self, Groups.spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                if views.after_death(screen, self.level_name) == "rerun":
-                    player = Level.create_level(self.level_name)
-                elif views.after_death(screen, self.level_name) == "main_menu":
-                    views.main_menu(screen)
+                constants.after_death = True
+                views.after_death(prepare.screen, self.level_name)
 
-        for block in pygame.sprite.spritecollide(self, obstacles_group, False):
+        for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
             if Square.is_blocking(self):
-                if block.rect.x - 5 <= self.rect.x + self.rect.width <= block.rect.x + 5 and not Square.is_on_obstacle(
+                if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and not Square.is_on_obstacle(
                         self):
-                    if views.after_death(screen, self.level_name) == "rerun":
-                        player = Level.create_level(self.level_name)
-                    elif views.after_death(screen, self.level_name) == "main_menu":
-                        views.main_menu(screen)
+                    constants.after_death = True
+                    views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
             return True
-        elif pygame.sprite.spritecollide(self, floor_group, False) or pygame.sprite.spritecollide(self, obstacles_group,
+        elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or pygame.sprite.spritecollide(self, Groups.obstacles_group,
                                                                                                   False):
             return True
         else:
             return False
 
     def is_ground(self):
-        if pygame.sprite.spritecollide(self, floor_group, False):
+        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
             self.yVelocity = 0
             return True
         else:
             return False
 
     def is_on_obstacle(self):
-        block_collide = pygame.sprite.spritecollide(self, obstacles_group, False)
+        block_collide = pygame.sprite.spritecollide(self, Groups.obstacles_group, False)
         if len(block_collide) != 0:
             for block in block_collide:
                 if block.rect.y - 17 <= self.rect.y + self.rect.height <= block.rect.y + 17:
@@ -87,18 +82,18 @@ class Square(pygame.sprite.Sprite):
                     return True
 
     def under_ground(self):
-        if pygame.sprite.spritecollide(self, floor_group, False):
+        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
             if self.rect.y % 70 < 20:
                 y_pos = self.rect.y // 70
                 self.rect.y = y_pos * 70
                 return True
 
     def plain_portal(self):
-        if pygame.sprite.spritecollide(self, portal_group, False):
+        if pygame.sprite.spritecollide(self, Groups.portal_group, False):
             Plain(self.level, self.level_name, self.x, self.y)
 
     def finish(self):
-        if pygame.sprite.spritecollide(self, finish_group, False):
+        if pygame.sprite.spritecollide(self, Groups.finish_group, False):
             print("Ты выиграл")
             terminate()
 
@@ -107,12 +102,12 @@ class Plain(pygame.sprite.Sprite):
     player_image = pygame.image.load("data/sprites/plane.png")
 
     def __init__(self, level, level_name, x, y):
-        player_group.empty()
-        super().__init__(all_sprites, player_group)
+        Groups.player_group.empty()
+        super().__init__(Groups.all_sprites, Groups.player_group)
         self.image = Plain.player_image
         self.rect = self.image.get_rect()
-        self.rect.x = x * tile_width
-        self.rect.y = (y - 1) * tile_height
+        self.rect.x = x * constants.tile_width
+        self.rect.y = (y - 1) * constants.tile_height
         self.level = level
         self.level_name = level_name
         self.x = x
@@ -128,34 +123,28 @@ class Plain(pygame.sprite.Sprite):
             self.yVelocity -= 2.5
         self.rect.x += self.xVelocity
         self.rect.y += self.yVelocity
-        if self.yVelocity <= tm_plain and not Plain.is_blocking(self):
+        if self.yVelocity <= constants.tm_plain and not Plain.is_blocking(self):
             self.yVelocity += self.gravity
         if Plain.is_on_obstacle(self) or Plain.is_ground(self):
             self.yVelocity = 0
-        self.y = self.rect.y // tile_height
+        self.y = self.rect.y // constants.tile_height
         Plain.death_or_not(self)
         Plain.under_ground(self)
         Plain.square_portal(self)
         Plain.finish(self)
 
     def death_or_not(self):
-        for spike in pygame.sprite.spritecollide(self, spikes_group, False):
+        for spike in pygame.sprite.spritecollide(self, Groups.spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
-                if views.after_death(screen, self.level_name) == "rerun":
-                    player = Level.create_level(self.level_name)
-                elif views.after_death(screen, self.level_name) == "main_menu":
-                    views.main_menu(screen)
+                constants.after_death = True
+                views.after_death(prepare.screen, self.level_name)
 
-        for block in pygame.sprite.spritecollide(self, obstacles_group, False):
+        for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
             if Plain.is_blocking(self):
                 if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and not Plain.is_on_obstacle(
                         self):
-                    terminate()
-
-                    # if views.after_death(screen, self.level_name) == "rerun":
-                    #     player = Level.create_level(self.level_name)
-                    # elif views.after_death(screen, self.level_name) == "main_menu":
-                    #     views.main_menu(screen)
+                    constants.after_death = True
+                    views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:
@@ -163,21 +152,21 @@ class Plain(pygame.sprite.Sprite):
         elif self.rect.y <= 0:
             self.rect.y = 15
             return True
-        elif pygame.sprite.spritecollide(self, floor_group, False) or pygame.sprite.spritecollide(self, obstacles_group,
+        elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or pygame.sprite.spritecollide(self, Groups.obstacles_group,
                                                                                                   False):
             return True
         else:
             return False
 
     def is_ground(self):
-        if pygame.sprite.spritecollide(self, floor_group, False):
+        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
             self.yVelocity = 0
             return True
         else:
             return False
 
     def is_on_obstacle(self):
-        block_collide = pygame.sprite.spritecollide(self, obstacles_group, False)
+        block_collide = pygame.sprite.spritecollide(self, Groups.obstacles_group, False)
         if len(block_collide) != 0:
             for block in block_collide:
                 if block.rect.y - 45 < self.rect.y + self.rect.height < block.rect.y + 45:
@@ -187,16 +176,16 @@ class Plain(pygame.sprite.Sprite):
                     return True
 
     def under_ground(self):
-        if pygame.sprite.spritecollide(self, floor_group, False):
+        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
             if self.rect.y % 70 < 25:
                 y_pos = self.rect.y // 70
                 self.rect.y = y_pos * 70
 
     def square_portal(self):
-        if pygame.sprite.spritecollide(self, portal_group, False):
+        if pygame.sprite.spritecollide(self, Groups.portal_group, False):
             Square(self.level, self.level_name, self.x, self.y)
 
     def finish(self):
-        if pygame.sprite.spritecollide(self, finish_group, False):
+        if pygame.sprite.spritecollide(self, Groups.finish_group, False):
             print("Ты выиграл")
             terminate()

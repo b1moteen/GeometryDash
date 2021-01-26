@@ -1,25 +1,23 @@
-import ctypes
-
+import prepare
 # Разрешение игры
-user32 = ctypes.windll.user32
-display_w = user32.GetSystemMetrics(0)
-display_h = user32.GetSystemMetrics(1)
 
 # constants
-size = width, height = display_w, display_h
+size = width, height = prepare.display_w, prepare.display_h
 FPS = 60
 gravity = 1
 tm = 20
 tm_plain = 10
 
-tile_width = 70 * display_w // 1920
+tile_width = 70 * prepare.display_w // 1920
 
-tile_height = 70 * display_h // 1080
+tile_height = 70 * prepare.display_h // 1080
 
 # --------
 
-square_x_velocity = 2
-
+rerun = False
+main_menu = False
+current_level = False
+after_death = False
 # level_names
 
 level_names = {'first': "first_level.txt",
