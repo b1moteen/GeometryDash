@@ -150,10 +150,12 @@ class Plain(pygame.sprite.Sprite):
             if Plain.is_blocking(self):
                 if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and not Plain.is_on_obstacle(
                         self):
-                    if views.after_death(screen, self.level_name) == "rerun":
-                        player = Level.create_level(self.level_name)
-                    elif views.after_death(screen, self.level_name) == "main_menu":
-                        views.main_menu(screen)
+                    terminate()
+
+                    # if views.after_death(screen, self.level_name) == "rerun":
+                    #     player = Level.create_level(self.level_name)
+                    # elif views.after_death(screen, self.level_name) == "main_menu":
+                    #     views.main_menu(screen)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:
