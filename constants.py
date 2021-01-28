@@ -22,3 +22,6 @@ after_death = False
 
 level_names = {'first': "first_level.txt",
                "second": "second_level.txt"}
+
+
+attempts = 1

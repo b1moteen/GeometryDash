@@ -46,6 +46,7 @@ class Square(pygame.sprite.Sprite):
         for spike in pygame.sprite.spritecollide(self, Groups.spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
                 constants.after_death = True
+                constants.attempts += 1
                 views.after_death(prepare.screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -53,7 +54,14 @@ class Square(pygame.sprite.Sprite):
                 if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and\
                         not Square.is_on_obstacle(self):
                     constants.after_death = True
+                    constants.attempts += 1
                     views.after_death(prepare.screen, self.level_name)
+
+        for kill_box in pygame.sprite.spritecollide(self, Groups.kill_obstacle_group, False):
+            if pygame.sprite.collide_mask(self, kill_box):
+                constants.after_death = True
+                constants.attempts += 1
+                views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
@@ -94,8 +102,7 @@ class Square(pygame.sprite.Sprite):
 
     def finish(self):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
-            print("Ты выиграл")
-            terminate()
+            views.win_menu(prepare.screen, self.level)
 
 
 class Plain(pygame.sprite.Sprite):
@@ -137,6 +144,7 @@ class Plain(pygame.sprite.Sprite):
         for spike in pygame.sprite.spritecollide(self, Groups.spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
                 constants.after_death = True
+                constants.attempts += 1
                 views.after_death(prepare.screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -144,7 +152,14 @@ class Plain(pygame.sprite.Sprite):
                 if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and not Plain.is_on_obstacle(
                         self):
                     constants.after_death = True
+                    constants.attempts += 1
                     views.after_death(prepare.screen, self.level_name)
+
+        for kill_box in pygame.sprite.spritecollide(self, Groups.kill_obstacle_group, False):
+            if pygame.sprite.collide_mask(self, kill_box):
+                constants.after_death = True
+                constants.attempts += 1
+                views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:
@@ -187,5 +202,4 @@ class Plain(pygame.sprite.Sprite):
 
     def finish(self):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
-            print("Ты выиграл")
-            terminate()
+            views.win_menu(prepare.screen, self.level)

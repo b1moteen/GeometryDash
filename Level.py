@@ -36,5 +36,12 @@ def create_level(filename):
                 Tile("portal", x, y)
             elif level[y][x] == ")":
                 Tile('finish', x, y)
+            elif level[y][x] == "^":
+                level[y][x] = "."
+                Tile("background", x, y)
+                level[y][x] = "^"
+                Tile("reverse_spike", x, y)
+            elif level[y][x] == "%":
+                Tile("kill_box", x, y)
 
     return player
