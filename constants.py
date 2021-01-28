@@ -1,4 +1,5 @@
 import prepare
+
 # Разрешение игры
 
 # constants
@@ -23,5 +24,8 @@ after_death = False
 level_names = {'first': "first_level.txt",
                "second": "second_level.txt"}
 
-
+level_music = {
+    'first': "data/music/Stereo Madness.mp3",
+    "second": "data/music/Back On Track.mp3"
+}
 attempts = 1

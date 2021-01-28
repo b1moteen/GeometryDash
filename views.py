@@ -1,6 +1,8 @@
 from Level import *
 from exeception import *
 
+pygame.mixer.init()
+
 
 def show_intro(screen):
     intro_screen = pygame.image.load("data/fon.jpg")
@@ -62,12 +64,17 @@ def main_menu(screen):
                 if exit_text_rect.collidepoint(event.pos):
                     terminate()
                 elif first_level_text_rect.collidepoint(event.pos):
+                    pygame.mixer.music.load("data/music/Stereo Madness.mp3")
+                    pygame.mixer.music.play()
                     return create_level(level_names["first"])
                 elif second_level_text_rect.collidepoint(event.pos):
+                    pygame.mixer.music.load("data/music/Back On Track.mp3")
+                    pygame.mixer.music.play()
                     return create_level(level_names["second"])
 
 
 def after_death(screen=prepare.screen, level=None):
+    pygame.mixer.music.stop()
     screen.fill("black")
     font = pygame.font.Font(None, 50)
 

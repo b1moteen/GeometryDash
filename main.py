@@ -32,6 +32,8 @@ while True:
         player_group.empty()
         portal_group.empty()
         if constants.rerun:
+            pygame.mixer.music.load(constants.level_music[constants.current_level])
+            pygame.mixer.music.play()
             constants.rerun = False
             player = create_level(constants.current_level)
             constants.current_level = None
