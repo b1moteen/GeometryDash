@@ -1,7 +1,7 @@
+import Groups
 import constants
 import prepare
 import views
-import Groups
 from exeception import *
 
 
@@ -51,7 +51,7 @@ class Square(pygame.sprite.Sprite):
 
         for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
             if Square.is_blocking(self):
-                if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and\
+                if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and \
                         not Square.is_on_obstacle(self):
                     constants.after_death = True
                     constants.attempts += 1
@@ -66,7 +66,7 @@ class Square(pygame.sprite.Sprite):
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
             return True
-        elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or\
+        elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or \
                 pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
             return True
         else:
@@ -83,18 +83,21 @@ class Square(pygame.sprite.Sprite):
         block_collide = pygame.sprite.spritecollide(self, Groups.obstacles_group, False)
         if len(block_collide) != 0:
             for block in block_collide:
-                if block.rect.y - 17 <= self.rect.y + self.rect.height <= block.rect.y + 17:
-                    if self.rect.y % 70 <= 17:
+                if block.rect.y - 25 <= self.rect.y + self.rect.height <= block.rect.y + 25:
+                    if self.rect.y % 70 <= 25:
                         y_pos = self.rect.y // 70
                         self.rect.y = y_pos * 70
                     return True
 
     def under_ground(self):
-        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
-            if self.rect.y % 70 < 20:
-                y_pos = self.rect.y // 70
-                self.rect.y = y_pos * 70
-                return True
+        floor_collide = pygame.sprite.spritecollide(self, Groups.floor_group, False)
+        if len(floor_collide) != 0:
+            for floor in floor_collide:
+                if floor.rect.y - 25 <= self.rect.y + self.rect.height <= floor.rect.y + 25:
+                    if self.rect.y % 70 <= 25:
+                        y_pos = self.rect.y // 70
+                        self.rect.y = y_pos * 70
+                    return True
 
     def plain_portal(self):
         if pygame.sprite.spritecollide(self, Groups.portal_group, False):
@@ -191,10 +194,14 @@ class Plain(pygame.sprite.Sprite):
                     return True
 
     def under_ground(self):
-        if pygame.sprite.spritecollide(self, Groups.floor_group, False):
-            if self.rect.y % 70 < 25:
-                y_pos = self.rect.y // 70
-                self.rect.y = y_pos * 70
+        floor_collide = pygame.sprite.spritecollide(self, Groups.floor_group, False)
+        if len(floor_collide) != 0:
+            for floor in floor_collide:
+                if floor.rect.y - 25 <= self.rect.y + self.rect.height <= floor.rect.y + 25:
+                    if self.rect.y % 70 <= 25:
+                        y_pos = self.rect.y // 70
+                        self.rect.y = y_pos * 70
+                    return True
 
     def square_portal(self):
         if pygame.sprite.spritecollide(self, Groups.portal_group, False):
