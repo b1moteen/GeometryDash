@@ -43,5 +43,5 @@ def create_level(filename):
                 Tile("reverse_spike", x, y)
             elif level[y][x] == "%":
                 Tile("kill_box", x, y)
-
+    constants.attempts = 1
     return player
