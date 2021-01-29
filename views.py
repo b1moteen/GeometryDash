@@ -53,7 +53,14 @@ def main_menu(screen):
     exit_text_rect = exit_text.get_rect()
     exit_text_rect.x = 50
     exit_text_rect.y = 200
-
+    """ 
+    сюда надо добавлять 
+    ваш_уровень_text = font.render("Выход", True, (цвет rgb))
+        screen.blit(ваш_уровень_text, (координата x, координата y))
+        ваш_уровень_text_rect = exit_text.get_rect()
+        ваш_уровень_text_rect.x = координата x
+        ваш_уровень_text_rect.y = координата y
+    """
     pygame.display.flip()
 
     while True:

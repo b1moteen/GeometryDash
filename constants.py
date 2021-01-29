@@ -20,10 +20,10 @@ main_menu = False
 current_level = False
 after_death = False
 # level_names
-
+# это надо изменять для добавления уровня
 level_names = {'first': "first_level.txt",
                "second": "second_level.txt"}
-
+# это надо изменять для добавления уровня
 level_music = {
     'first_level.txt': "data/music/Stereo Madness.mp3",
     "second_level.txt": "data/music/Back On Track.mp3"
