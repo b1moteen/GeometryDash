@@ -12,7 +12,7 @@ class Square(pygame.sprite.Sprite):
         Groups.player_group.empty()
         super().__init__(Groups.all_sprites, Groups.player_group)
         self.image = Square.player_image
-        self.image = pygame.transform.scale(self.image, (70, 70))
+        self.image = pygame.transform.scale(self.image, (constants.tile_width, constants.tile_height))
         self.rect = self.image.get_rect()
         self.rect.x = x * constants.tile_width
         self.rect.y = (y - 1) * constants.tile_height
