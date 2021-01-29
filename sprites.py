@@ -78,7 +78,7 @@ class Square(pygame.sprite.Sprite):
                     views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
-        if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y < 0 or self.rect.y > 1080:
+        if self.rect.x < 0 or self.rect.x > constants.height or self.rect.y < 0 or self.rect.y > constants.width:
             return True
         elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or \
                 pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -190,7 +190,7 @@ class Plain(pygame.sprite.Sprite):
                     views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
-        if self.rect.x < 0 or self.rect.x > 1920 or self.rect.y > 1080:
+        if self.rect.x < 0 or self.rect.x > constants.height or self.rect.y > constants.width:
             return True
         elif self.rect.y <= 0:
             self.rect.y = 15
