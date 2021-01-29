@@ -77,6 +77,15 @@ class Square(pygame.sprite.Sprite):
                     constants.attempts += 1
                     views.after_death(prepare.screen, self.level_name)
 
+        for floor in pygame.sprite.spritecollide(self, Groups.floor_group, False):
+            if Square.is_blocking(self):
+                if floor.rect.y - 10 > self.rect.y + self.rect.height and \
+                        not Square.is_on_obstacle(self):
+                    constants.after_death = True
+                    pygame.mixer.music.pause()
+                    constants.attempts += 1
+                    views.after_death(prepare.screen, self.level_name)
+
     def is_blocking(self):
         if self.rect.x < 0 or self.rect.x > constants.height or self.rect.y < 0 or self.rect.y > constants.width:
             return True
