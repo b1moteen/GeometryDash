@@ -48,5 +48,4 @@ def create_level(filename):
                 Tile("background", x, y)
                 level[y][x] = "0"
                 Tile("coin", x, y)
-    constants.attempts = 1
     return player

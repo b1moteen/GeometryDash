@@ -41,6 +41,7 @@ while True:
             constants.current_level = None
         elif main_menu:
             constants.main_menu = False
+            constants.attempts = 1
             player = views.main_menu(prepare.screen)
 
 
