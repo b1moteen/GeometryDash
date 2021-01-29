@@ -30,6 +30,16 @@ class Square(pygame.sprite.Sprite):
             if Square.is_ground(self) or Square.is_on_obstacle(self):
                 self.yVelocity -= 17
 
+        # if keys[pygame.K_ESCAPE] and not constants.pause:
+        #     constants.velocities = [self.xVelocity, self.yVelocity]
+        #     self.xVelocity = 0
+        #     self.yVelocity = 0
+        #     constants.pause = True
+        #
+        # if keys[pygame.K_ESCAPE] and constants.pause:
+        #     self.xVelocity = constants.velocities[0]
+        #     self.yVelocity = constants.velocities[1]
+
         self.rect.x += self.xVelocity
         self.rect.y += self.yVelocity
         if self.yVelocity <= constants.tm and not Square.is_blocking(self):
@@ -37,6 +47,7 @@ class Square(pygame.sprite.Sprite):
         if Square.is_blocking(self):
             self.yVelocity = 0
         self.y = self.rect.y // constants.tile_height
+        Square.collect_coin(self)
         Square.death_or_not(self)
         Square.under_ground(self)
         Square.plain_portal(self)
@@ -46,6 +57,7 @@ class Square(pygame.sprite.Sprite):
         for spike in pygame.sprite.spritecollide(self, Groups.spikes_group, False):
             if pygame.sprite.collide_mask(self, spike):
                 constants.after_death = True
+                pygame.mixer.music.pause()
                 constants.attempts += 1
                 views.after_death(prepare.screen, self.level_name)
 
@@ -53,6 +65,7 @@ class Square(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, kill_box):
                 constants.after_death = True
                 constants.attempts += 1
+                pygame.mixer.music.pause()
                 views.after_death(prepare.screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -60,6 +73,7 @@ class Square(pygame.sprite.Sprite):
                 if block.rect.x - 10 <= self.rect.x + self.rect.width <= block.rect.x + 10 and \
                         not Square.is_on_obstacle(self):
                     constants.after_death = True
+                    pygame.mixer.music.pause()
                     constants.attempts += 1
                     views.after_death(prepare.screen, self.level_name)
 
@@ -107,6 +121,13 @@ class Square(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
             views.win_menu(prepare.screen, self.level)
 
+    def collect_coin(self):
+        if pygame.sprite.spritecollide(self, Groups.coin_group, True):
+            collect_coin = pygame.mixer.Sound('data/music/collect_coin.mp3')
+            collect_coin.play()
+            collect_coin.set_volume(0.5)
+            constants.coins += 1
+
 
 class Plain(pygame.sprite.Sprite):
     player_image = pygame.image.load("data/sprites/plane.png")
@@ -138,6 +159,7 @@ class Plain(pygame.sprite.Sprite):
         if Plain.is_on_obstacle(self) or Plain.is_ground(self):
             self.yVelocity = 0
         self.y = self.rect.y // constants.tile_height
+        Plain.collect_coin(self)
         Plain.death_or_not(self)
         Plain.under_ground(self)
         Plain.square_portal(self)
@@ -148,12 +170,14 @@ class Plain(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, spike):
                 constants.after_death = True
                 constants.attempts += 1
+                pygame.mixer.music.pause()
                 views.after_death(prepare.screen, self.level_name)
 
         for kill_box in pygame.sprite.spritecollide(self, Groups.kill_obstacle_group, False):
             if pygame.sprite.collide_mask(self, kill_box):
                 constants.after_death = True
                 constants.attempts += 1
+                pygame.mixer.music.pause()
                 views.after_death(prepare.screen, self.level_name)
 
         for block in pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -162,6 +186,7 @@ class Plain(pygame.sprite.Sprite):
                         self):
                     constants.after_death = True
                     constants.attempts += 1
+                    pygame.mixer.music.pause()
                     views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
@@ -210,3 +235,10 @@ class Plain(pygame.sprite.Sprite):
     def finish(self):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
             views.win_menu(prepare.screen, self.level)
+
+    def collect_coin(self):
+        if pygame.sprite.spritecollide(self, Groups.coin_group, True):
+            collect_coin = pygame.mixer.Sound("data/music/collect_coin.mp3")
+            collect_coin.play()
+            collect_coin.set_volume(0.5)
+            constants.coins += 1

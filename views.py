@@ -66,10 +66,12 @@ def main_menu(screen):
                 elif first_level_text_rect.collidepoint(event.pos):
                     pygame.mixer.music.load("data/music/Stereo Madness.mp3")
                     pygame.mixer.music.play()
+                    pygame.mixer.music.set_volume(0.5)
                     return create_level(level_names["first"])
                 elif second_level_text_rect.collidepoint(event.pos):
                     pygame.mixer.music.load("data/music/Back On Track.mp3")
                     pygame.mixer.music.play()
+                    pygame.mixer.music.set_volume(0.5)
                     return create_level(level_names["second"])
 
 
@@ -131,16 +133,22 @@ def win_menu(screen=prepare.screen, level=None):
     main_menu_text_rect.y = 100
 
     exit_text = font.render("Выход", True, (255, 255, 255))
-    screen.blit(exit_text, (50, 250))
+    screen.blit(exit_text, (50, 300))
     exit_text_rect = exit_text.get_rect()
     exit_text_rect.x = 50
-    exit_text_rect.y = 250
+    exit_text_rect.y = 300
 
     attempts_text = font.render(f"Попытки:{constants.attempts}", True, (255, 255, 255))
     screen.blit(attempts_text, (50, 200))
     attempts_text = exit_text.get_rect()
     attempts_text.x = 50
     attempts_text.y = 200
+
+    coins_text = font.render(f"Монетки:{constants.coins}", True, (255, 255, 255))
+    screen.blit(coins_text, (50, 250))
+    coins_text = exit_text.get_rect()
+    coins_text.x = 50
+    coins_text.y = 250
 
     pygame.display.flip()
 

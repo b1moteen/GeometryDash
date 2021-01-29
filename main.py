@@ -22,6 +22,7 @@ while True:
     prepare.clock.tick(FPS)
     if constants.after_death:
         constants.after_death = False
+        constants.coins = 0
         all_sprites.empty()
         tiles_group.empty()
         obstacles_group.empty()
@@ -34,6 +35,7 @@ while True:
         if constants.rerun:
             pygame.mixer.music.load(constants.level_music[constants.current_level])
             pygame.mixer.music.play()
+            pygame.mixer.music.set_volume(0.5)
             constants.rerun = False
             player = create_level(constants.current_level)
             constants.current_level = None

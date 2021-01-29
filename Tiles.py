@@ -10,7 +10,8 @@ class Tile(pygame.sprite.Sprite):
                    "portal": pygame.image.load("data/ground/portal.png"),
                    "finish": pygame.image.load("data/ground/background.png"),
                    "reverse_spike": pygame.image.load("data/ground/reverse_spike.png"),
-                   "kill_box": pygame.image.load("data/ground/box.png")}
+                   "kill_box": pygame.image.load("data/ground/box.png"),
+                   "coin": pygame.image.load("data/ground/coin.png")}
 
     def __init__(self, tile_type, x, y):
         self.image = Tile.tile_images[tile_type]
@@ -26,6 +27,8 @@ class Tile(pygame.sprite.Sprite):
             super().__init__(all_sprites, tiles_group, finish_group)
         elif tile_type == "kill_box":
             super().__init__(all_sprites, tiles_group, kill_obstacle_group)
+        elif tile_type == "coin":
+            super().__init__(all_sprites, tiles_group, coin_group)
         else:
             super().__init__(all_sprites, tiles_group, obstacles_group)
 

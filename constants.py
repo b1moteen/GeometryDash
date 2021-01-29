@@ -25,7 +25,10 @@ level_names = {'first': "first_level.txt",
                "second": "second_level.txt"}
 
 level_music = {
-    'first': "data/music/Stereo Madness.mp3",
-    "second": "data/music/Back On Track.mp3"
+    'first_level.txt': "data/music/Stereo Madness.mp3",
+    "second_level.txt": "data/music/Back On Track.mp3"
 }
 attempts = 1
+coins = 0
+# pause = False
+# velocities = [0, 0]
