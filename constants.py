@@ -14,6 +14,7 @@ delta_y = 25
 delta_x = 10
 floor_delta_y = 10
 plain_delta_y = 45
+magic_number = 12
 
 tile_width = 70 * prepare.display_w // 1920
 

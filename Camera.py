@@ -1,4 +1,4 @@
-from constants import *
+import constants
 
 
 class Camera:
@@ -13,8 +13,8 @@ class Camera:
     def update(self, sprite):
         x, y = sprite.rect.x, sprite.rect.y
         w, h = sprite.rect.width, sprite.rect.height
-        self.dx = -(x - width // 2 + w // 2 + 200)
-        self.dy = -(y - height // 2 + h // 2 - 450)
-        if self.dy > -12:
+        self.dx = -(x - constants.width // 2 + w // 2 + 200 * constants.width // 1920)
+        self.dy = -(y - constants.height // 2 + h // 2 - 450 * constants.height // 1080)
+        if self.dy > -constants.magic_number:
             self.dy = 0
 
