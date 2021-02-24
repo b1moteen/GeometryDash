@@ -8,6 +8,12 @@ FPS = 60
 gravity = 1
 tm = 20
 tm_plain = 10
+default_jump = 17
+default_plain_jump = 2.5
+delta_y = 25
+delta_x = 10
+floor_delta_y = 10
+plain_delta_y = 45
 
 tile_width = 70 * prepare.display_w // 1920
 
