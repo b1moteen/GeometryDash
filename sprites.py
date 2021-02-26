@@ -87,7 +87,7 @@ class Square(pygame.sprite.Sprite):
                     views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
-        if self.rect.x < 0 or self.rect.x > constants.height or self.rect.y < 0 or self.rect.y > constants.width:
+        if self.rect.x < 0 or self.rect.x > constants.width or self.rect.y < 0 or self.rect.y > constants.height:
             return True
         elif pygame.sprite.spritecollide(self, Groups.floor_group, False) or \
                 pygame.sprite.spritecollide(self, Groups.obstacles_group, False):
@@ -128,7 +128,9 @@ class Square(pygame.sprite.Sprite):
 
     def finish(self):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
-            views.win_menu(prepare.screen, self.level)
+            constants.win = True
+            pygame.mixer.music.stop()
+            views.win_menu(prepare.screen, self.level_name)
 
     def collect_coin(self):
         if pygame.sprite.spritecollide(self, Groups.coin_group, True):
@@ -147,7 +149,7 @@ class Plain(pygame.sprite.Sprite):
         self.image = Plain.player_image
         self.rect = self.image.get_rect()
         self.rect.x = x * constants.tile_width
-        self.rect.y = (y - 1) * constants.tile_height
+        self.rect.y = y * constants.tile_height
         self.level = level
         self.level_name = level_name
         self.x = x
@@ -199,7 +201,7 @@ class Plain(pygame.sprite.Sprite):
                     views.after_death(prepare.screen, self.level_name)
 
     def is_blocking(self):
-        if self.rect.x < 0 or self.rect.x > constants.height or self.rect.y > constants.width:
+        if self.rect.x < 0 or self.rect.x > constants.width or self.rect.y > constants.height:
             return True
         elif self.rect.y <= 0:
             self.rect.y = 15
@@ -243,7 +245,9 @@ class Plain(pygame.sprite.Sprite):
 
     def finish(self):
         if pygame.sprite.spritecollide(self, Groups.finish_group, False):
-            views.win_menu(prepare.screen, self.level)
+            constants.win = True
+            pygame.mixer.music.stop()
+            views.win_menu(prepare.screen, self.level_name)
 
     def collect_coin(self):
         if pygame.sprite.spritecollide(self, Groups.coin_group, True):

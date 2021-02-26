@@ -20,8 +20,9 @@ while True:
     player_group.draw(prepare.screen)
     pygame.display.flip()
     prepare.clock.tick(FPS)
-    if constants.after_death:
+    if constants.after_death or constants.win:
         constants.after_death = False
+        constants.win = False
         constants.coins = 0
         all_sprites.empty()
         tiles_group.empty()

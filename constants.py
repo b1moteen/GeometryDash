@@ -26,6 +26,7 @@ rerun = False
 main_menu = False
 current_level = False
 after_death = False
+win = False
 # level_names
 # это надо изменять для добавления уровня
 level_names = {'first': "first_level.txt",
